@@ -51,7 +51,9 @@ class _RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<_RegisterForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // Vamos a manejar el formulario con Cubits, por lo que no es necesario tener un GlobalKey<FormState> aquí
+  // y tampoco el Form widget, ya que el BlocProvider se encargará de manejar el estado del formulario.
+  //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // Ya no tendremos estas propiedades dentro del _RegisterFormState pues vamos a manejar el formulario con Cubits
   // String username = '';
@@ -64,7 +66,7 @@ class _RegisterFormState extends State<_RegisterForm> {
 
     final colors = Theme.of(context).colorScheme;
     return Form(
-      key: _formKey,
+      //key: _formKey,
       child: Column(
         children: [
           CustomTextFormField(
@@ -74,7 +76,7 @@ class _RegisterFormState extends State<_RegisterForm> {
             // errorText: 'Este campo no puede estar vacío ok',
             onChanged: (value) {
               registerCubit.usernameChanged(value);
-              _formKey.currentState?.validate();
+              //_formKey.currentState?.validate();  // ya la validación la hace el Cubit
             }, // (value) => username = value,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -94,7 +96,7 @@ class _RegisterFormState extends State<_RegisterForm> {
             icon: Icon(Icons.person_outline_rounded, color: colors.primary),
             onChanged: (value) {
               registerCubit.emailChanged(value);
-              _formKey.currentState?.validate();
+              // _formKey.currentState?.validate(); // ya la validación la hace el Cubit
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -117,7 +119,7 @@ class _RegisterFormState extends State<_RegisterForm> {
             obscure: true,
             onChanged: (value) {
               registerCubit.passwordChanged(value);
-              _formKey.currentState?.validate();
+              // _formKey.currentState?.validate(); // ya la validación la hace el Cubit
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -133,6 +135,7 @@ class _RegisterFormState extends State<_RegisterForm> {
 
           FilledButton.tonalIcon(
             onPressed: () {
+              // Aquí no es necesario validar el formulario con el GlobalKey, ya que el Cubit se encarga de eso
               // final isValid = _formKey.currentState!.validate();
               // if (!isValid) return;
 
