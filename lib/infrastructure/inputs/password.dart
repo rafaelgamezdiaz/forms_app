@@ -22,4 +22,16 @@ class Password extends FormzInput<String, PasswordInputError> {
 
     return null;
   }
+
+  String? get errorMessage {
+    if (isValid || isPure) return null;
+    switch (displayError) {
+      case PasswordInputError.empty:
+        return 'La constraseña es requerida';
+      case PasswordInputError.length:
+        return 'Require al menos 6 caracteres';
+      default:
+        return null;
+    }
+  }
 }

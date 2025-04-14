@@ -43,50 +43,26 @@ class _RegisterView extends StatelessWidget {
   }
 }
 
-class _RegisterForm extends StatefulWidget {
+class _RegisterForm extends StatelessWidget {
   const _RegisterForm();
-
-  @override
-  State<_RegisterForm> createState() => _RegisterFormState();
-}
-
-class _RegisterFormState extends State<_RegisterForm> {
-  // Vamos a manejar el formulario con Cubits, por lo que no es necesario tener un GlobalKey<FormState> aquí
-  // y tampoco el Form widget, ya que el BlocProvider se encargará de manejar el estado del formulario.
-  //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // Ya no tendremos estas propiedades dentro del _RegisterFormState pues vamos a manejar el formulario con Cubits
-  // String username = '';
-  // String email = '';
-  // String password = '';
 
   @override
   Widget build(BuildContext context) {
     final registerCubit = context.watch<RegisterCubit>();
+    final username = registerCubit.state.username;
+    final password = registerCubit.state.password;
+    final email = registerCubit.state.email;
 
     final colors = Theme.of(context).colorScheme;
     return Form(
-      //key: _formKey,
       child: Column(
         children: [
           CustomTextFormField(
             label: 'Nombre usuario',
             hint: 'Escribe tu username',
             icon: Icon(Icons.person_outline_rounded, color: colors.primary),
-            // errorText: 'Este campo no puede estar vacío ok',
-            onChanged: (value) {
-              registerCubit.usernameChanged(value);
-              //_formKey.currentState?.validate();  // ya la validación la hace el Cubit
-            }, // (value) => username = value,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Este campo no puede estar vacío';
-              }
-              if (value.trim().length < 6) {
-                return 'El nombre de usuario debe tener al menos 6 caracteres';
-              }
-              return null;
-            },
+            onChanged: registerCubit.usernameChanged,
+            errorText: username.errorMessage,
           ),
 
           const SizedBox(height: 20),
@@ -94,21 +70,8 @@ class _RegisterFormState extends State<_RegisterForm> {
             label: 'Correo Electrónico',
             hint: 'Email',
             icon: Icon(Icons.person_outline_rounded, color: colors.primary),
-            onChanged: (value) {
-              registerCubit.emailChanged(value);
-              // _formKey.currentState?.validate(); // ya la validación la hace el Cubit
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Este campo no puede estar vacío';
-              }
-              if (!RegExp(
-                r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-              ).hasMatch(value)) {
-                return 'Ingrese un correo electrónico válido';
-              }
-              return null;
-            },
+            onChanged: registerCubit.emailChanged,
+            errorText: email.errorMessage,
           ),
           const SizedBox(height: 20),
 
@@ -117,28 +80,13 @@ class _RegisterFormState extends State<_RegisterForm> {
             hint: 'Ingrese la contraseña',
             icon: Icon(Icons.password_rounded, color: colors.primary),
             obscure: true,
-            onChanged: (value) {
-              registerCubit.passwordChanged(value);
-              // _formKey.currentState?.validate(); // ya la validación la hace el Cubit
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Este campo no puede estar vacío';
-              }
-              if (value.trim().length < 6) {
-                return 'La contraseña debe tener al menos 6 caracteres';
-              }
-              return null;
-            },
+            onChanged: registerCubit.passwordChanged,
+            errorText: password.errorMessage,
           ),
           const SizedBox(height: 20),
 
           FilledButton.tonalIcon(
             onPressed: () {
-              // Aquí no es necesario validar el formulario con el GlobalKey, ya que el Cubit se encarga de eso
-              // final isValid = _formKey.currentState!.validate();
-              // if (!isValid) return;
-
               registerCubit.onSubmit();
             },
             label: Text('Register'),
